@@ -1,0 +1,25 @@
+<div class="container mt-5 text-center">
+  <h2>GDrive Clone</h2>
+  <div *ngIf="!user">
+    <button class="btn btn-primary" (click)="loginWithGoogle()">Login with Google</button>
+  </div>
+  <div *ngIf="user">
+    <p>Welcome, {{ user.displayName }}</p>
+    <button class="btn btn-secondary mb-3" (click)="logout()">Logout</button>
+    <br />
+
+    <input type="file" (change)="onFileSelected($event)">
+    <button class="btn btn-success" (click)="uploadFile()">Upload</button>
+
+    <hr />
+
+    <h4>Your Files:</h4>
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let file of files">
+        {{ file.originalname }} ({{ file.size }} bytes)
+        <button class="btn btn-sm btn-info float-end" (click)="downloadFile(file._id)">Download</button>
+      </li>
+    </ul>
+  </div>
+</div>
+
