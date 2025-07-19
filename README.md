@@ -1,4 +1,4 @@
-# CloudCopy - Google Drive Clone
+# CloudCopy - Secure file storage & sharing
 
 A full-stack file sharing application with public sharing capabilities, QR code generation, and search functionality.
 
