@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 
 const fileSchema = new mongoose.Schema({
   filename: String,
@@ -7,6 +8,11 @@ const fileSchema = new mongoose.Schema({
   size: Number,
   path: String,
   userId: String,
+  publicId: {
+    type: String,
+    unique: true,
+    default: () => crypto.randomBytes(16).toString('hex')
+  },
   uploadedAt: {
     type: Date,
     default: Date.now

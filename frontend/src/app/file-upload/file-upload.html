@@ -1,25 +1,68 @@
 <div class="container mt-5 text-center">
-  <h2>GDrive Clone</h2>
+  <h2>Cloud Copy</h2>
+  <p class="lead">Upload, share, and manage your files with ease!</p>
   <div *ngIf="!user">
-    <button class="btn btn-primary" (click)="loginWithGoogle()">Login with Google</button>
+    <button class="btn btn-primary" (click)="loginWithGoogle()"><i class="bi bi-google"> </i> Google Login</button>
   </div>
   <div *ngIf="user">
     <p>Welcome, {{ user.displayName }}</p>
-    <button class="btn btn-secondary mb-3" (click)="logout()">Logout</button>
+    <button class="btn btn-secondary mb-3" (click)="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
     <br />
 
     <input type="file" (change)="onFileSelected($event)">
-    <button class="btn btn-success" (click)="uploadFile()">Upload</button>
+    <button class="btn btn-success" (click)="uploadFile()"><i class="bi bi-cloud-upload"></i> Upload</button>
 
     <hr />
 
     <h4>Your Files:</h4>
+    
+    <!-- Search Bar -->
+    <div class="row mb-3">
+      <div class="col-md-6 mx-auto">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Search files by name or type..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()">
+      </div>
+    </div>
+
     <ul class="list-group">
-      <li class="list-group-item" *ngFor="let file of files">
-        {{ file.originalname }} ({{ file.size }} bytes)
-        <button class="btn btn-sm btn-info float-end" (click)="downloadFile(file._id)">Download</button>
+      <li class="list-group-item" *ngFor="let file of filteredFiles">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ file.originalname }}</strong> ({{ file.size }} bytes)
+            <br>
+            <small class="text-muted">{{ file.mimetype }}</small>
+          </div>
+          <div class="btn-group" role="group">
+            <button class="btn btn-sm btn-info" (click)="downloadFile(file._id)"><i class="bi bi-cloud-download"></i> Download</button>
+            <button class="btn btn-sm btn-success" (click)="generatePublicLink(file)"><i class="bi bi-share"></i> Share Link</button>
+            <button class="btn btn-sm btn-warning" (click)="generateQRCode(file)"><i class="bi bi-qr-code-scan"></i> QR Code</button>
+          </div>
+        </div>
       </li>
     </ul>
+
+    <!-- QR Code Modal -->
+    <div class="modal fade show" *ngIf="showQRCode" style="display: block; background-color: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">QR Code for {{ selectedFileForQR?.originalname }}</h5>
+            <button type="button" class="btn-close" (click)="closeQRCode()"></button>
+          </div>
+          <div class="modal-body text-center">
+            <img [src]="qrCodeDataUrl" alt="QR Code" class="img-fluid" style="max-width: 300px;">
+            <p class="mt-3">Scan this QR code to access the file</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeQRCode()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

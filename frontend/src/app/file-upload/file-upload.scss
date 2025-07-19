@@ -1,0 +1,31 @@
+.modal {
+  z-index: 1050;
+}
+
+.modal-backdrop {
+  z-index: 1040;
+}
+
+.btn-group {
+  .btn {
+    margin-left: 2px;
+  }
+}
+
+.list-group-item {
+  .d-flex {
+    gap: 10px;
+  }
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.file-info {
+  flex-grow: 1;
+}
+
+.file-actions {
+  flex-shrink: 0;
+}

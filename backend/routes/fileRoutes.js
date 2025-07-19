@@ -43,4 +43,28 @@ router.get('/download/:id', verifyFirebaseToken, async (req, res) => {
   res.download(file.path, file.originalname);
 });
 
+// Public file download route (no authentication required)
+router.get('/public/:publicId', async (req, res) => {
+  try {
+    const file = await File.findOne({ publicId: req.params.publicId });
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+    res.download(file.path, file.originalname);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get public link for a file
+router.get('/public-link/:id', verifyFirebaseToken, async (req, res) => {
+  const file = await File.findById(req.params.id);
+  if (!file || file.userId !== req.user.uid) {
+    return res.status(403).json({ error: 'Access denied' });
+  }
+  
+  const publicUrl = `${req.protocol}://${req.get('host')}/api/files/public/${file.publicId}`;
+  res.json({ publicUrl, publicId: file.publicId });
+});
+
 module.exports = router;
