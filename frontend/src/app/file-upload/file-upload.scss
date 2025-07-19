@@ -1,31 +1,120 @@
-.modal {
-  z-index: 1050;
+/* Custom component styles */
+.file-upload-container {
+  min-height: 100vh;
 }
 
-.modal-backdrop {
-  z-index: 1040;
-}
-
-.btn-group {
-  .btn {
-    margin-left: 2px;
+/* Custom animations */
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.list-group-item {
-  .d-flex {
-    gap: 10px;
+.slide-in {
+  animation: slideInFromBottom 0.3s ease-out;
+}
+
+/* Custom file input styling */
+.file-input-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.file-input-wrapper input[type=file] {
+  position: absolute;
+  left: -9999px;
+}
+
+.file-input-label {
+  display: inline-block;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Custom checkbox styling */
+.custom-checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.custom-checkbox:checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.custom-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .file-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .file-actions button {
+    width: 100%;
+    justify-content: center;
   }
 }
 
-.search-container {
-  margin-bottom: 20px;
+/* Hover effects */
+.file-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.file-info {
-  flex-grow: 1;
-}
-
-.file-actions {
-  flex-shrink: 0;
+/* Focus states */
+.focus-ring:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }

@@ -2,6 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const File = require('../models/File');
 const verifyFirebaseToken = require('../middleware/firebaseAuth');
+const fs = require('fs');
+const path = require('path');
 
 const router = express.Router();
 
@@ -41,6 +43,76 @@ router.get('/download/:id', verifyFirebaseToken, async (req, res) => {
     return res.status(403).json({ error: 'Access denied' });
   }
   res.download(file.path, file.originalname);
+});
+
+// Delete a single file
+router.delete('/:id', verifyFirebaseToken, async (req, res) => {
+  try {
+    const file = await File.findById(req.params.id);
+    
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+    
+    if (file.userId !== req.user.uid) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    
+    // Delete the physical file from filesystem
+    if (fs.existsSync(file.path)) {
+      fs.unlinkSync(file.path);
+    }
+    
+    // Delete the file record from database
+    await File.findByIdAndDelete(req.params.id);
+    
+    res.json({ message: 'File deleted successfully' });
+  } catch (error) {
+    console.error('Delete error:', error);
+    res.status(500).json({ error: 'Failed to delete file' });
+  }
+});
+
+// Bulk delete files
+router.delete('/bulk', verifyFirebaseToken, async (req, res) => {
+  try {
+    const { fileIds } = req.body;
+    
+    if (!fileIds || !Array.isArray(fileIds) || fileIds.length === 0) {
+      return res.status(400).json({ error: 'File IDs array is required' });
+    }
+    
+    // Find all files that belong to the user
+    const files = await File.find({
+      _id: { $in: fileIds },
+      userId: req.user.uid
+    });
+    
+    if (files.length === 0) {
+      return res.status(404).json({ error: 'No files found to delete' });
+    }
+    
+    // Delete physical files from filesystem
+    files.forEach(file => {
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+    });
+    
+    // Delete file records from database
+    await File.deleteMany({
+      _id: { $in: fileIds },
+      userId: req.user.uid
+    });
+    
+    res.json({ 
+      message: `${files.length} file(s) deleted successfully`,
+      deletedCount: files.length
+    });
+  } catch (error) {
+    console.error('Bulk delete error:', error);
+    res.status(500).json({ error: 'Failed to delete files' });
+  }
 });
 
 // Public file download route (no authentication required)
