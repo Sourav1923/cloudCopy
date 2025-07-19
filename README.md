@@ -40,7 +40,7 @@ A full-stack file sharing application with public sharing capabilities, QR code 
 ### Frontend
 - **Angular 20** with TypeScript
 - **Firebase** for authentication
-- **Bootstrap** for UI components
+- **TailwindCSS & Bootstrap** for UI components
 - **QRCode** library for QR generation
 
 ## Setup
